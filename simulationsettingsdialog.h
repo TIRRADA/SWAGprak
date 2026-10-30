@@ -5,6 +5,7 @@
 #include <QDialog>
 
 class QSpinBox;
+class QTableWidget;
 
 // Окно, в котором пользователь задаёт параметры моделирования.
 class SimulationSettingsDialog : public QDialog
@@ -13,12 +14,13 @@ class SimulationSettingsDialog : public QDialog
 
 public:
     explicit SimulationSettingsDialog(const SimulationParameters &initialParameters, QWidget *parent = nullptr);
-
     SimulationParameters parameters() const;
-
     void accept() override;
 
 private:
+    void resizeProductsTable(int rowCount);
+    bool validateProducts();
+
     QSpinBox *m_dayCountSpinBox;
     QSpinBox *m_shopCountSpinBox;
     QSpinBox *m_productKindCountSpinBox;
@@ -28,4 +30,6 @@ private:
     QSpinBox *m_maxUnitsPerItemSpinBox;
     QSpinBox *m_minDeliveryDaysSpinBox;
     QSpinBox *m_maxDeliveryDaysSpinBox;
+
+    QTableWidget *m_productsTable;
 };

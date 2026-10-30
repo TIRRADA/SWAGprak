@@ -74,6 +74,8 @@ struct SimulationParameters{
     int shopCount = 3;              //M
     int productKindCount = 12;      //K
 
+    QVector<Product> initialProducts; //начальный набор товаров на складе
+
     int minItemsPerOrder = 1;       //кол-во позиций в заказе
     int maxItemsPerOrder = 4;
     int minUnitsPerItem = 20;       //кол-во товара
