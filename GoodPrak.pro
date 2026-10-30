@@ -9,14 +9,31 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    discounttab.cpp \
     main.cpp \
-    goodprak.cpp
+    mainwindow.cpp \
+    orderstab.cpp \
+    shipmentstab.cpp \
+    simulationsettingsdialog.cpp \
+    statisticstab.cpp \
+    stocktab.cpp \
+    supplierrequeststab.cpp \
+    writeofftab.cpp
 
 HEADERS += \
-    goodprak.h
+    discounttab.h \
+    mainwindow.h \
+    orderstab.h \
+    shipmentstab.h \
+    simulationsettingsdialog.h \
+    statisticstab.h \
+    stocktab.h \
+    supplierrequeststab.h \
+    warehouseservice.h \
+    warehousetypes.h \
+    writeofftab.h
 
-FORMS += \
-    goodprak.ui
+FORMS +=
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
