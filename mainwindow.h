@@ -4,6 +4,7 @@
 
 #include <QMainWindow>
 
+class DiscountTab;
 class OrdersTab;
 class QLabel;
 class QPushButton;
@@ -12,6 +13,8 @@ class ShipmentsTab;
 class StockTab;
 class SupplierRequestsTab;
 class WarehouseService;
+class WriteOffTab;
+class StatisticsTab;
 
 class MainWindow : public QMainWindow
 {
@@ -47,4 +50,8 @@ private:
     OrdersTab *m_ordersTab = nullptr;
     ShipmentsTab *m_shipmentsTab = nullptr;
     SupplierRequestsTab *m_supplierRequestsTab = nullptr;
+    DiscountTab *m_discountTab = nullptr;
+    WriteOffTab *m_writeOffTab = nullptr;
+    StatisticsTab *m_statisticsTab = nullptr;
+
 };

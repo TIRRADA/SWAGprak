@@ -5,10 +5,6 @@
 #include <QTableWidget>
 #include <QVBoxLayout>
 
-namespace {
-constexpr int kExpirationWarningDays = 3;
-}
-
 StockTab::StockTab(QWidget *parent) : QWidget(parent){
     m_table = new QTableWidget(this);
     m_table->setColumnCount(6);
@@ -22,11 +18,24 @@ StockTab::StockTab(QWidget *parent) : QWidget(parent){
 }
 
 void StockTab::showProducts(const QVector<Product> &products){
-    m_table->setRowCount(products.size());
+    m_products = products;
+    rebuildTable();
+}
 
-    for (int row = 0; row < products.size(); ++row) {
-        const Product &product = products.at(row);
-        const bool isExpiringSoon = product.daysUntilExpiration <= kExpirationWarningDays;
+void StockTab::setExpirationWarningDays(int days)
+{
+    m_expirationWarningDays = days;
+    rebuildTable();
+}
+
+void StockTab::rebuildTable()
+{
+    m_table->setRowCount(m_products.size());
+
+    for (int row = 0; row < m_products.size(); ++row) {
+        const Product &product = m_products.at(row);
+        const bool isExpiringSoon = product.daysUntilExpiration <= m_expirationWarningDays;
+
         setCellText(row, 0, product.name, isExpiringSoon);
         setCellText(row, 1, QString("%1 / %2").arg(product.packagesInStock).arg(product.maxPackages), isExpiringSoon);
         setCellText(row, 2, QString("%1 %2").arg(product.unitsPerPackage).arg(product.unitName), isExpiringSoon);
@@ -36,7 +45,8 @@ void StockTab::showProducts(const QVector<Product> &products){
     }
 }
 
-void StockTab::setCellText(int row, int column, const QString &text, bool isHighlighted){
+void StockTab::setCellText(int row, int column, const QString &text, bool isHighlighted)
+{
     auto *item = new QTableWidgetItem(text);
     if (isHighlighted) {
         item->setBackground(QColor(255, 224, 178));

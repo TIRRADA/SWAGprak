@@ -1,11 +1,14 @@
 #include "mainwindow.h"
 
+#include "discounttab.h"
 #include "orderstab.h"
 #include "shipmentstab.h"
 #include "simulationsettingsdialog.h"
 #include "stocktab.h"
 #include "supplierrequeststab.h"
 #include "warehouseservice.h"
+#include "writeofftab.h"
+#include "statisticstab.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -56,11 +59,20 @@ void MainWindow::createInterface(){
     m_ordersTab = new OrdersTab(m_tabWidget);
     m_shipmentsTab = new ShipmentsTab(m_tabWidget);
     m_supplierRequestsTab = new SupplierRequestsTab(m_tabWidget);
+    m_discountTab = new DiscountTab(m_tabWidget);
+    m_writeOffTab = new WriteOffTab(m_tabWidget);
+    m_statisticsTab = new StatisticsTab(m_tabWidget);
+
+    m_stockTab->setExpirationWarningDays(m_discountTab->daysThreshold());
+    connect(m_discountTab, &DiscountTab::daysThresholdChanged, m_stockTab, &StockTab::setExpirationWarningDays);
 
     m_tabWidget->addTab(m_stockTab, "Склад");
     m_tabWidget->addTab(m_ordersTab, "Заказы за день");
     m_tabWidget->addTab(m_shipmentsTab, "Перевозки на завтра");
     m_tabWidget->addTab(m_supplierRequestsTab, "Заявки поставщикам");
+    m_tabWidget->addTab(m_discountTab, "Уценка");
+    m_tabWidget->addTab(m_writeOffTab, "Списание и потери");
+    m_tabWidget->addTab(m_statisticsTab, "Итоги");
 
     mainLayout->addLayout(controlLayout);
     mainLayout->addWidget(m_tabWidget);
@@ -71,7 +83,8 @@ void MainWindow::createInterface(){
     connect(m_runToEndButton, &QPushButton::clicked, this, &MainWindow::runSimulationToEnd);
 }
 
-void MainWindow::updateControlsState(){
+void MainWindow::updateControlsState()
+{
     const bool canAdvance = m_warehouseService != nullptr && m_isSimulationStarted && !m_warehouseService->isFinished();
     m_nextDayButton->setEnabled(canAdvance);
     m_runToEndButton->setEnabled(canAdvance);
@@ -92,27 +105,36 @@ void MainWindow::openSettingsDialog(){
     updateControlsState();
 }
 
-void MainWindow::goToNextDay(){
+void MainWindow::goToNextDay()
+{
     m_warehouseService->nextDay();
+    if (m_warehouseService->isFinished()){
+        m_tabWidget->setCurrentWidget(m_statisticsTab);
+    }
 }
 
-void MainWindow::runSimulationToEnd(){
+void MainWindow::runSimulationToEnd()
+{
     while (!m_warehouseService->isFinished()){
         m_warehouseService->nextDay();
     }
+    m_tabWidget->setCurrentWidget(m_statisticsTab);
 }
 
 void MainWindow::refreshView(){
-    if (!m_warehouseService){
+    if (!m_warehouseService)
         return;
-    }
 
     m_dayLabel->setText(QString("День: %1 / %2").arg(m_warehouseService->currentDay()).arg(m_parameters.dayCount));
 
-    m_stockTab->showProducts(m_warehouseService->stock());
+    const QVector<Product> products = m_warehouseService->stock();
+    m_stockTab->showProducts(products);
+    m_discountTab->showProducts(products);
     m_ordersTab->showOrders(m_warehouseService->todayOrders());
     m_shipmentsTab->showShipments(m_warehouseService->tomorrowShipments());
     m_supplierRequestsTab->showRequests(m_warehouseService->supplierRequests());
+    m_writeOffTab->showWriteOffs(m_warehouseService->writtenOffItems(),m_warehouseService->statistics());
+    m_statisticsTab->showStatistics(m_warehouseService->statistics(), m_warehouseService->isFinished());
 
     updateControlsState();
 }
@@ -140,7 +162,9 @@ void MainWindow::showDemoData(){
     buckwheat.pricePerPackage = 1100.0;
     buckwheat.daysUntilExpiration = 14;
 
-    m_stockTab->showProducts({rice, buckwheat});
+    const QVector<Product> demoProducts = {rice, buckwheat};
+    m_stockTab->showProducts(demoProducts);
+    m_discountTab->showProducts(demoProducts);
 
     OrderItem riceItem;
     riceItem.productId = 1;
@@ -178,4 +202,18 @@ void MainWindow::showDemoData(){
     request.packagesToOrder = 30;
     request.deliveryDays = 3;
     m_supplierRequestsTab->showRequests({request});
+
+    WrittenOffItem writtenOffItem;
+    writtenOffItem.productName = "Молоко сгущённое";
+    writtenOffItem.packages = 8;
+    writtenOffItem.loss = 9600.0;
+
+    Statistics demoStatistics;
+    demoStatistics.soldUnits = 1240;
+    demoStatistics.soldRevenue = 87500.0;
+    demoStatistics.writtenOffPackages = 8;
+    demoStatistics.writeOffLoss = 9600.0;
+    demoStatistics.discountLoss = 750.0;
+    m_writeOffTab->showWriteOffs({writtenOffItem}, demoStatistics);
+    m_statisticsTab->showStatistics(demoStatistics, false);
 }

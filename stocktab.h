@@ -14,9 +14,13 @@ public:
     explicit StockTab(QWidget *parent = nullptr);
 
     void showProducts(const QVector<Product> &products);
+    void setExpirationWarningDays(int days);
 
 private:
+    void rebuildTable();
     void setCellText(int row, int column, const QString &text, bool isHighlighted);
 
+    QVector<Product> m_products;
+    int m_expirationWarningDays = 5;
     QTableWidget *m_table;
 };
