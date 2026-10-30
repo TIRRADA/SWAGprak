@@ -17,7 +17,7 @@ public:
     virtual int currentDay() const = 0;
     virtual bool isFinished() const = 0;
 
-    //данные, которые отображаются
+    //отображение
     virtual QVector<Product> stock() const = 0;
     virtual QVector<Order> todayOrders() const = 0;
     virtual QVector<Shipment> tomorrowShipments() const = 0;
@@ -25,7 +25,7 @@ public:
     virtual QVector<WrittenOffItem> writtenOffItems() const = 0;
     virtual Statistics statistics() const = 0;
 
-    //че деает зав. складом
+    //че делает зав. складом
     virtual void setDiscount(int productId, int discountPercent) = 0;
     virtual void approveShipment(int shipmentId) = 0;
     virtual void approveSupplierRequest(int requestId) = 0;

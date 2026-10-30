@@ -10,10 +10,16 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    simulationsettingsdialog.cpp \
+    stocktab.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    simulationsettingsdialog.h \
+    stocktab.h \
+    warehouseservice.h \
+    warehousetypes.h
 
 FORMS +=
 
