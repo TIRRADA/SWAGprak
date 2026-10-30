@@ -1,7 +1,10 @@
 #include "mainwindow.h"
 
+#include "orderstab.h"
+#include "shipmentstab.h"
 #include "simulationsettingsdialog.h"
 #include "stocktab.h"
+#include "supplierrequeststab.h"
 #include "warehouseservice.h"
 
 #include <QHBoxLayout>
@@ -10,8 +13,7 @@
 #include <QTabWidget>
 #include <QVBoxLayout>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent){
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     setWindowTitle("Система управления оптовым складом");
     resize(1000, 650);
 
@@ -23,8 +25,11 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::setWarehouseService(WarehouseService *warehouseService){
     m_warehouseService = warehouseService;
     if (m_warehouseService) {
-        connect(m_warehouseService, &WarehouseService::stateChanged,
-                this, &MainWindow::refreshView);
+        connect(m_warehouseService, &WarehouseService::stateChanged, this, &MainWindow::refreshView);
+
+        //утверждаем по кнопке
+        connect(m_shipmentsTab, &ShipmentsTab::approveRequested, m_warehouseService, &WarehouseService::approveShipment);
+        connect(m_supplierRequestsTab, &SupplierRequestsTab::approveRequested, m_warehouseService, &WarehouseService::approveSupplierRequest);
     }
     updateControlsState();
     refreshView();
@@ -48,7 +53,14 @@ void MainWindow::createInterface(){
 
     m_tabWidget = new QTabWidget(centralWidget);
     m_stockTab = new StockTab(m_tabWidget);
+    m_ordersTab = new OrdersTab(m_tabWidget);
+    m_shipmentsTab = new ShipmentsTab(m_tabWidget);
+    m_supplierRequestsTab = new SupplierRequestsTab(m_tabWidget);
+
     m_tabWidget->addTab(m_stockTab, "Склад");
+    m_tabWidget->addTab(m_ordersTab, "Заказы за день");
+    m_tabWidget->addTab(m_shipmentsTab, "Перевозки на завтра");
+    m_tabWidget->addTab(m_supplierRequestsTab, "Заявки поставщикам");
 
     mainLayout->addLayout(controlLayout);
     mainLayout->addWidget(m_tabWidget);
@@ -94,13 +106,19 @@ void MainWindow::refreshView(){
     if (!m_warehouseService){
         return;
     }
+
     m_dayLabel->setText(QString("День: %1 / %2").arg(m_warehouseService->currentDay()).arg(m_parameters.dayCount));
+
     m_stockTab->showProducts(m_warehouseService->stock());
+    m_ordersTab->showOrders(m_warehouseService->todayOrders());
+    m_shipmentsTab->showShipments(m_warehouseService->tomorrowShipments());
+    m_supplierRequestsTab->showRequests(m_warehouseService->supplierRequests());
+
     updateControlsState();
 }
 
 void MainWindow::showDemoData(){
-    //временные данные
+    //временные данные, потом удалишь
     Product rice;
     rice.id = 1;
     rice.name = "Рис";
@@ -123,4 +141,41 @@ void MainWindow::showDemoData(){
     buckwheat.daysUntilExpiration = 14;
 
     m_stockTab->showProducts({rice, buckwheat});
+
+    OrderItem riceItem;
+    riceItem.productId = 1;
+    riceItem.productName = "Рис";
+    riceItem.requestedUnits = 100;
+    riceItem.issuedPackages = 5;
+    riceItem.issuedUnits = 100;
+    riceItem.cost = 6750.0;
+
+    OrderItem buckwheatItem;
+    buckwheatItem.productId = 2;
+    buckwheatItem.productName = "Гречка";
+    buckwheatItem.requestedUnits = 50;
+    buckwheatItem.issuedPackages = 4;
+    buckwheatItem.issuedUnits = 48;
+    buckwheatItem.cost = 4400.0;
+
+    Order order;
+    order.id = 1;
+    order.shopNumber = 2;
+    order.items = {riceItem, buckwheatItem};
+    m_ordersTab->showOrders({order});
+
+    Shipment shipment;
+    shipment.id = 1;
+    shipment.shopNumber = 2;
+    shipment.items = order.items;
+    shipment.totalCost = 11150.0;
+    m_shipmentsTab->showShipments({shipment});
+
+    SupplierRequest request;
+    request.id = 2;
+    request.productId = 1;
+    request.productName = "Рис";
+    request.packagesToOrder = 30;
+    request.deliveryDays = 3;
+    m_supplierRequestsTab->showRequests({request});
 }

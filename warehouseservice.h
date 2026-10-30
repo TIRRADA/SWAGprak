@@ -3,8 +3,7 @@
 #include "warehousetypes.h"
 #include <QObject>
 
-class WarehouseService : public QObject
-{
+class WarehouseService : public QObject{
     Q_OBJECT
 
 public:

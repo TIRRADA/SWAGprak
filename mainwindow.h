@@ -4,10 +4,13 @@
 
 #include <QMainWindow>
 
+class OrdersTab;
 class QLabel;
 class QPushButton;
 class QTabWidget;
+class ShipmentsTab;
 class StockTab;
+class SupplierRequestsTab;
 class WarehouseService;
 
 class MainWindow : public QMainWindow
@@ -17,7 +20,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
 
-    // Подключает бэкенд склада (его пишет напарник).
+    //здесь бэк подключай
     void setWarehouseService(WarehouseService *warehouseService);
 
 private slots:
@@ -29,7 +32,7 @@ private slots:
 private:
     void createInterface();
     void updateControlsState();
-    void showDemoData(); // ВРЕМЕННО: пока нет бэка, чтобы увидеть таблицу
+    void showDemoData(); //удали потом, это я чисто для себя смотрел, пока нет бэка
 
     WarehouseService *m_warehouseService = nullptr;
     SimulationParameters m_parameters;
@@ -41,4 +44,7 @@ private:
     QPushButton *m_runToEndButton = nullptr;
     QTabWidget *m_tabWidget = nullptr;
     StockTab *m_stockTab = nullptr;
+    OrdersTab *m_ordersTab = nullptr;
+    ShipmentsTab *m_shipmentsTab = nullptr;
+    SupplierRequestsTab *m_supplierRequestsTab = nullptr;
 };

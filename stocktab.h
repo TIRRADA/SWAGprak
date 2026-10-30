@@ -3,10 +3,9 @@
 #include "warehousetypes.h"
 
 #include <QWidget>
-
+//не трогай
 class QTableWidget;
 
-// Вкладка со списком товаров на складе.
 class StockTab : public QWidget
 {
     Q_OBJECT

@@ -6,13 +6,10 @@
 #include <QVBoxLayout>
 
 namespace {
-// Товары, у которых до конца срока годности осталось столько дней или меньше, подсвечиваются.
 constexpr int kExpirationWarningDays = 3;
 }
 
-StockTab::StockTab(QWidget *parent)
-    : QWidget(parent)
-{
+StockTab::StockTab(QWidget *parent) : QWidget(parent){
     m_table = new QTableWidget(this);
     m_table->setColumnCount(6);
     m_table->setHorizontalHeaderLabels({"Товар", "Упаковок (есть / макс.)", "В упаковке", "Цена упаковки", "Дней до конца срока", "Уценка"});
@@ -24,14 +21,12 @@ StockTab::StockTab(QWidget *parent)
     layout->addWidget(m_table);
 }
 
-void StockTab::showProducts(const QVector<Product> &products)
-{
+void StockTab::showProducts(const QVector<Product> &products){
     m_table->setRowCount(products.size());
 
     for (int row = 0; row < products.size(); ++row) {
         const Product &product = products.at(row);
         const bool isExpiringSoon = product.daysUntilExpiration <= kExpirationWarningDays;
-
         setCellText(row, 0, product.name, isExpiringSoon);
         setCellText(row, 1, QString("%1 / %2").arg(product.packagesInStock).arg(product.maxPackages), isExpiringSoon);
         setCellText(row, 2, QString("%1 %2").arg(product.unitsPerPackage).arg(product.unitName), isExpiringSoon);
@@ -41,8 +36,7 @@ void StockTab::showProducts(const QVector<Product> &products)
     }
 }
 
-void StockTab::setCellText(int row, int column, const QString &text, bool isHighlighted)
-{
+void StockTab::setCellText(int row, int column, const QString &text, bool isHighlighted){
     auto *item = new QTableWidgetItem(text);
     if (isHighlighted) {
         item->setBackground(QColor(255, 224, 178));

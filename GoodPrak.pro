@@ -11,13 +11,19 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    orderstab.cpp \
+    shipmentstab.cpp \
     simulationsettingsdialog.cpp \
-    stocktab.cpp
+    stocktab.cpp \
+    supplierrequeststab.cpp
 
 HEADERS += \
     mainwindow.h \
+    orderstab.h \
+    shipmentstab.h \
     simulationsettingsdialog.h \
     stocktab.h \
+    supplierrequeststab.h \
     warehouseservice.h \
     warehousetypes.h
 
