@@ -22,7 +22,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
 
     createInterface();
     updateControlsState();
-    showDemoData();
 }
 
 void MainWindow::setWarehouseService(WarehouseService *warehouseService){
@@ -138,83 +137,4 @@ void MainWindow::refreshView(){
     m_statisticsTab->showStatistics(m_warehouseService->statistics(), m_warehouseService->isFinished());
 
     updateControlsState();
-}
-
-void MainWindow::showDemoData(){
-    //временные данные, потом удалишь
-    Product rice;
-    rice.id = 1;
-    rice.name = "Рис";
-    rice.packagesInStock = 30;
-    rice.maxPackages = 60;
-    rice.unitsPerPackage = 20;
-    rice.unitName = "пачек";
-    rice.pricePerPackage = 1500.0;
-    rice.daysUntilExpiration = 2;
-    rice.discountPercent = 10;
-
-    Product buckwheat;
-    buckwheat.id = 2;
-    buckwheat.name = "Гречка";
-    buckwheat.packagesInStock = 45;
-    buckwheat.maxPackages = 60;
-    buckwheat.unitsPerPackage = 12;
-    buckwheat.unitName = "пачек";
-    buckwheat.pricePerPackage = 1100.0;
-    buckwheat.daysUntilExpiration = 14;
-
-    const QVector<Product> demoProducts = {rice, buckwheat};
-    m_stockTab->showProducts(demoProducts);
-    m_discountTab->showProducts(demoProducts);
-
-    OrderItem riceItem;
-    riceItem.productId = 1;
-    riceItem.productName = "Рис";
-    riceItem.requestedUnits = 100;
-    riceItem.issuedPackages = 5;
-    riceItem.issuedUnits = 100;
-    riceItem.cost = 6750.0;
-
-    OrderItem buckwheatItem;
-    buckwheatItem.productId = 2;
-    buckwheatItem.productName = "Гречка";
-    buckwheatItem.requestedUnits = 50;
-    buckwheatItem.issuedPackages = 4;
-    buckwheatItem.issuedUnits = 48;
-    buckwheatItem.cost = 4400.0;
-
-    Order order;
-    order.id = 1;
-    order.shopNumber = 2;
-    order.items = {riceItem, buckwheatItem};
-    m_ordersTab->showOrders({order});
-
-    Shipment shipment;
-    shipment.id = 1;
-    shipment.shopNumber = 2;
-    shipment.items = order.items;
-    shipment.totalCost = 11150.0;
-    m_shipmentsTab->showShipments({shipment});
-
-    SupplierRequest request;
-    request.id = 2;
-    request.productId = 1;
-    request.productName = "Рис";
-    request.packagesToOrder = 30;
-    request.deliveryDays = 3;
-    m_supplierRequestsTab->showRequests({request});
-
-    WrittenOffItem writtenOffItem;
-    writtenOffItem.productName = "Молоко сгущённое";
-    writtenOffItem.packages = 8;
-    writtenOffItem.loss = 9600.0;
-
-    Statistics demoStatistics;
-    demoStatistics.soldUnits = 1240;
-    demoStatistics.soldRevenue = 87500.0;
-    demoStatistics.writtenOffPackages = 8;
-    demoStatistics.writeOffLoss = 9600.0;
-    demoStatistics.discountLoss = 750.0;
-    m_writeOffTab->showWriteOffs({writtenOffItem}, demoStatistics);
-    m_statisticsTab->showStatistics(demoStatistics, false);
 }
