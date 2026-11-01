@@ -33,7 +33,15 @@ SupplierRequestsTab::SupplierRequestsTab(QWidget *parent) : QWidget(parent){
 
     connect(m_table, &QTableWidget::itemSelectionChanged, this, [this]() {updateApproveButton();});
 
-    connect(m_approveButton, &QPushButton::clicked, this, [this]() {const int index = selectedRequestIndex();if (index >= 0)emit approveRequested(m_requests.at(index).id);});
+    connect(m_approveButton, &QPushButton::clicked, this, [this]() {
+        const int index = selectedRequestIndex();
+        if (index < 0){
+            return;
+        }
+
+        emit approveRequested(m_requests.at(index).id);
+        m_table->clearSelection();
+    });
 }
 
 void SupplierRequestsTab::showRequests(const QVector<SupplierRequest> &requests){

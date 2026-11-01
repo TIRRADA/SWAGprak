@@ -131,7 +131,7 @@ SimulationSettingsDialog::SimulationSettingsDialog(const SimulationParameters &i
     auto *productsLayout = new QVBoxLayout;
     productsLayout->addWidget(m_productsTable);
 
-    auto *productsGroup = new QGroupBox("Начальный набор товаров на складе (строк столько же, сколько K)", this);
+    auto *productsGroup = new QGroupBox("Начальный набор товаров на складе", this);
     productsGroup->setLayout(productsLayout);
 
     auto *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
