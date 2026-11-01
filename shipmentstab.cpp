@@ -40,7 +40,15 @@ ShipmentsTab::ShipmentsTab(QWidget *parent) : QWidget(parent){
     layout->addLayout(buttonLayout);
 
     connect(m_shipmentsTable, &QTableWidget::itemSelectionChanged, this, [this]() {showItemsOfSelectedShipment();updateApproveButton();});
-    connect(m_approveButton, &QPushButton::clicked, this, [this]() {const int index = selectedShipmentIndex();if (index >= 0)emit approveRequested(m_shipments.at(index).id);});
+    connect(m_approveButton, &QPushButton::clicked, this, [this]() {
+        const int index = selectedShipmentIndex();
+        if (index < 0){
+            return;
+        }
+
+        emit approveRequested(m_shipments.at(index).id);
+        m_shipmentsTable->clearSelection();
+    });
 }
 
 void ShipmentsTab::showShipments(const QVector<Shipment> &shipments){
