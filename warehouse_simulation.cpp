@@ -37,7 +37,7 @@ void WarehouseSimulator::startSimulation(const SimulationParameters &parameters)
     m_nextShipmentId = 1;
     m_nextRequestId = 1;
 
-    for (Product &product : m_products) {
+    for (Product& product : m_products) {
         product.discountPercent = 0;
         m_shelfLife[product.id] = product.daysUntilExpiration;
     }
@@ -100,7 +100,7 @@ void WarehouseSimulator::setDiscount(int productId, int discountPercent) {
 }
 
 void WarehouseSimulator::approveShipment(int shipmentId) {
-    for (Shipment &shipment : m_shipments) {
+    for (Shipment& shipment : m_shipments) {
         if (shipment.id == shipmentId) {
             shipment.isApproved = true;
         }
@@ -109,7 +109,7 @@ void WarehouseSimulator::approveShipment(int shipmentId) {
 }
 
 void WarehouseSimulator::approveSupplierRequest(int requestId) {
-    for (SupplierRequest &request : m_requests) {
+    for (SupplierRequest& request : m_requests) {
         if (request.id == requestId) {
             request.isApproved = true;
         }
@@ -118,7 +118,7 @@ void WarehouseSimulator::approveSupplierRequest(int requestId) {
 }
 
 Product *WarehouseSimulator::findProduct(int productId) {
-    for (Product &product : m_products) {
+    for (Product& product : m_products) {
         if (product.id == productId) {
             return &product;
         }
@@ -128,7 +128,7 @@ Product *WarehouseSimulator::findProduct(int productId) {
 
 int WarehouseSimulator::pendingPackages(int productId) const {
     int sum = 0;
-    for (const SupplierRequest &request : m_requests) {
+    for (const SupplierRequest& request : m_requests) {
         if (request.productId == productId && m_arrivalDay.value(request.id) > m_day) {
             sum += request.packagesToOrder;
         }
@@ -167,7 +167,7 @@ void WarehouseSimulator::receiveDeliveries() {
 }
 
 void WarehouseSimulator::checkExpiration() {
-    for (Product &product : m_products) {
+    for (Product& product : m_products) {
         product.daysUntilExpiration--;
 
         if (product.daysUntilExpiration <= 0) {
@@ -253,7 +253,7 @@ void WarehouseSimulator::generateOrders() {
         shipment.id = m_nextShipmentId++;
         shipment.shopNumber = shop;
         shipment.items = order.items;
-        for (const OrderItem &item : order.items) {
+        for (const OrderItem& item : order.items) {
             shipment.totalCost += item.cost;
         }
 
@@ -263,7 +263,7 @@ void WarehouseSimulator::generateOrders() {
 }
 
 void WarehouseSimulator::createSupplierRequests() {
-    for (const Product &product : m_products) {
+    for (const Product& product : m_products) {
         const int pending = pendingPackages(product.id);
         const int total = product.packagesInStock + pending;
         if (total >= product.maxPackages * kLowStockPart) {
