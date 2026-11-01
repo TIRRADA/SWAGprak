@@ -33,6 +33,7 @@ void MainWindow::setWarehouseService(WarehouseService *warehouseService){
         //утверждаем по кнопке
         connect(m_shipmentsTab, &ShipmentsTab::approveRequested, m_warehouseService, &WarehouseService::approveShipment);
         connect(m_supplierRequestsTab, &SupplierRequestsTab::approveRequested, m_warehouseService, &WarehouseService::approveSupplierRequest);
+        connect(m_discountTab, &DiscountTab::discountRequested, m_warehouseService, &WarehouseService::setDiscount);
     }
     updateControlsState();
     refreshView();
