@@ -18,6 +18,7 @@ SOURCES += \
     statisticstab.cpp \
     stocktab.cpp \
     supplierrequeststab.cpp \
+    warehouse_simulation.cpp \
     writeofftab.cpp
 
 HEADERS += \
@@ -30,6 +31,7 @@ HEADERS += \
     stocktab.h \
     supplierrequeststab.h \
     warehouseservice.h \
+    warehouse_simulation.h \
     warehousetypes.h \
     writeofftab.h
 

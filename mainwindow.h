@@ -35,7 +35,6 @@ private slots:
 private:
     void createInterface();
     void updateControlsState();
-    void showDemoData(); //удали потом, это я чисто для себя смотрел, пока нет бэка
 
     WarehouseService *m_warehouseService = nullptr;
     SimulationParameters m_parameters;
